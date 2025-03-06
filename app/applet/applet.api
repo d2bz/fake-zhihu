@@ -1,0 +1,21 @@
+syntax = "v1"
+
+type RegisterRequest {
+	Name     string `json:"name"`
+	Mobile   string `json:"mobile"`
+	Password string `json:"password"`
+}
+
+type RegisterResponse {
+	UserID string `json:"user_id"`
+	Token  string `json:"token"`
+}
+
+@server (
+	prefix: /zhihu
+)
+service applet-api {
+	@handler RegisterHandler
+	post /register (RegisterRequest) returns (RegisterResponse)
+}
+
