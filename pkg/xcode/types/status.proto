@@ -1,0 +1,15 @@
+// Description: 用于定义通用的状态码，方便在各个rpc服务中传递错误信息
+// go代码生成命令: protoc --proto_path=. --go_out=. --go_opt=paths=source_relative status.proto
+syntax = "proto3";
+
+package types;
+
+import "google/protobuf/any.proto";
+
+option go_package = "zhihu/pkg/xcode/types;types";
+
+message Status {
+    int32 code = 1;
+    string message = 2;
+    repeated google.protobuf.Any details = 3;
+}
