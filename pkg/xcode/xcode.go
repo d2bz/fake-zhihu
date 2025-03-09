@@ -47,3 +47,15 @@ func Define(code int, msg string) Err {
 		msg:  msg,
 	}
 }
+
+func StringCodeToErr(s string) Err {
+	if len(s) == 0 {
+		return OK
+	}
+	code, err := strconv.Atoi(s)
+	if err != nil {
+		return ServerErr
+	}
+
+	return Err{code: code}
+}

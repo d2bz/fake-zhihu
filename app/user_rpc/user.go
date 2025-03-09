@@ -7,6 +7,7 @@ import (
 	"zhihu/app/user_rpc/internal/server"
 	"zhihu/app/user_rpc/internal/svc"
 	"zhihu/app/user_rpc/user"
+	"zhihu/pkg/interceptors"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -32,6 +33,9 @@ func main() {
 		}
 	})
 	defer s.Stop()
+
+	// 自定义拦截器
+	s.AddUnaryInterceptors(interceptors.ServerErrorInterceptor())
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)
 	s.Start()
