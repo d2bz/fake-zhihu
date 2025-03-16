@@ -14,11 +14,14 @@ import (
 )
 
 type (
-	Request  = user.Request
-	Response = user.Response
+	FindByMobileRequest  = user.FindByMobileRequest
+	FindByMobileResponse = user.FindByMobileResponse
+	RegisterRequest      = user.RegisterRequest
+	RegisterResponse     = user.RegisterResponse
 
 	User interface {
-		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
+		FindByMobile(ctx context.Context, in *FindByMobileRequest, opts ...grpc.CallOption) (*FindByMobileResponse, error)
+		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	}
 
 	defaultUser struct {
@@ -32,7 +35,12 @@ func NewUser(cli zrpc.Client) User {
 	}
 }
 
-func (m *defaultUser) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+func (m *defaultUser) FindByMobile(ctx context.Context, in *FindByMobileRequest, opts ...grpc.CallOption) (*FindByMobileResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
-	return client.Ping(ctx, in, opts...)
+	return client.FindByMobile(ctx, in, opts...)
+}
+
+func (m *defaultUser) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.Register(ctx, in, opts...)
 }

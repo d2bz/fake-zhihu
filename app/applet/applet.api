@@ -1,3 +1,4 @@
+// goctl api go --api applet.api --dir .
 syntax = "v1"
 
 type RegisterRequest {
@@ -7,7 +8,7 @@ type RegisterRequest {
 }
 
 type RegisterResponse {
-	UserID string `json:"user_id"`
+	UserID int64  `json:"user_id"`
 	Token  string `json:"token"`
 }
 

@@ -3,14 +3,31 @@ syntax = "proto3";
 package user_rpc;
 option go_package="./user";
 
-message Request {
-  string ping = 1;
-}
-
-message Response {
-  string pong = 1;
-}
-
 service User {
-  rpc Ping(Request) returns(Response);
+  rpc FindByMobile(FindByMobileRequest) returns (FindByMobileResponse);
+  rpc Register(RegisterRequest) returns (RegisterResponse);
 }
+
+message FindByMobileRequest {
+  string mobile = 1;
+}
+
+message FindByMobileResponse {
+  int64 userId = 1;
+  string username = 2;
+  string mobile = 3;
+  string avatar = 4;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string mobile = 2;
+  string avatar = 3;
+  string password = 4;
+}
+
+message RegisterResponse {
+  int64 userId = 1;
+}
+
+// goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.

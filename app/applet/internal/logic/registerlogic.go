@@ -7,6 +7,8 @@ import (
 	"zhihu/app/applet/internal/code"
 	"zhihu/app/applet/internal/svc"
 	"zhihu/app/applet/internal/types"
+	"zhihu/app/user_rpc/userclient"
+	"zhihu/pkg/encrypt"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,8 +37,39 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	if len(req.Password) == 0 {
 		return nil, code.PasswordEmpty
 	} else {
-
+		req.Password, err = encrypt.EnPassword(req.Password)
+		if err != nil {
+			logx.Errorf("encrypt.EnPassword error: password: %s err: %v", req.Password, err)
+			return nil, err
+		}
 	}
-
-	return
+	mobile, err := encrypt.EnMobile(req.Mobile)
+	if err != nil {
+		logx.Errorf("encrypt.EnMobile error: mobile: %s err: %v", req.Mobile, err)
+		return nil, err
+	}
+	// 从rpc服务中根据手机号查找用户
+	u, err := l.svcCtx.UserRPC.FindByMobile(l.ctx, &userclient.FindByMobileRequest{
+		Mobile: mobile,
+	})
+	if err != nil {
+		logx.Errorf("FindByMobile error: %v", err)
+		return nil, err
+	}
+	if u != nil && u.UserId > 0 {
+		return nil, code.MobileHasRegister
+	}
+	regRes, err := l.svcCtx.UserRPC.Register(l.ctx, &userclient.RegisterRequest{
+		Username: req.Name,
+		Mobile:   mobile,
+	})
+	if err != nil {
+		logx.Errorf("Register error: %v", err)
+		return nil, err
+	}
+	// TODO: token
+	// TODO: 密码处理
+	return &types.RegisterResponse{
+		UserID: regRes.UserId,
+	}, nil
 }
