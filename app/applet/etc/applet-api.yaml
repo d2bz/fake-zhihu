@@ -13,3 +13,4 @@ UserRPC:
   NonBlock: true
 Auth:
   AccessSecret: liudebaoliliuqin
+  AccessExpire: 2592000

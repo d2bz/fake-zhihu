@@ -9,6 +9,7 @@ import (
 	"zhihu/app/applet/internal/types"
 	"zhihu/app/user_rpc/userclient"
 	"zhihu/pkg/encrypt"
+	"zhihu/pkg/token"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -59,6 +60,7 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 	if u != nil && u.UserId > 0 {
 		return nil, code.MobileHasRegister
 	}
+	// 用户注册得到uid
 	regRes, err := l.svcCtx.UserRPC.Register(l.ctx, &userclient.RegisterRequest{
 		Username: req.Name,
 		Mobile:   mobile,
@@ -67,9 +69,22 @@ func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.Regist
 		logx.Errorf("Register error: %v", err)
 		return nil, err
 	}
-	// TODO: token
+
+	token, err := token.BuildToken(token.TokenOptions{
+		AccessSecret: l.svcCtx.Config.Auth.AccessSecret,
+		AccessExpire: l.svcCtx.Config.Auth.AccessExpire,
+		UserId:       regRes.UserId,
+	})
+	if err != nil {
+		logx.Errorf("BuildToken error: %v", err)
+		return nil, err
+	}
 	// TODO: 密码处理
 	return &types.RegisterResponse{
 		UserID: regRes.UserId,
+		Token: types.Token{
+			AccessToken:  token.AccessToken,
+			AccessExpire: token.AccessExpire,
+		},
 	}, nil
 }

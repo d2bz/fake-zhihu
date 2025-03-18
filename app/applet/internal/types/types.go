@@ -10,6 +10,11 @@ type RegisterRequest struct {
 }
 
 type RegisterResponse struct {
-	UserID int64  `json:"user_id"`
-	Token  string `json:"token"`
+	UserID int64 `json:"user_id"`
+	Token  Token `json:"token"`
+}
+
+type Token struct {
+	AccessToken  string `json:"access_token"`
+	AccessExpire int64  `json:"access_expire"`
 }

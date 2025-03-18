@@ -10,7 +10,12 @@ type (
 	TokenOptions struct {
 		AccessSecret string
 		AccessExpire int64
-		Fields       map[string]interface{}
+		UserId       int64
+	}
+
+	claims struct {
+		jwt.RegisteredClaims
+		UserId int64
 	}
 
 	Token struct {
@@ -21,12 +26,25 @@ type (
 
 func BuildToken(opt TokenOptions) (Token, error) {
 	var token Token
-	now := time.Now().Add(-time.Minute).Unix()
-	// accessToken, err :=
+	accessToken, err := GenToken(opt.AccessSecret, opt.UserId, opt.AccessExpire)
+	if err != nil {
+		return token, err
+	}
+	token.AccessToken = accessToken
+	token.AccessExpire = time.Now().Unix() + opt.AccessExpire
 
 	return token, nil
 }
 
-func GenToken(iat int64, secretKey string, payloads map[string]interface{}, seconds int64) (string, error) {
-	claims := make(jwt.MapClaims)
+func GenToken(secretKey string, uid int64, seconds int64) (string, error) {
+	claims := &claims{
+		UserId: uid,
+		RegisteredClaims: jwt.RegisteredClaims{
+			// time.Duration的单位是纳秒，需要转化为秒
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Duration(seconds) * time.Second)),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims)
+	return token.SignedString([]byte(secretKey))
 }
