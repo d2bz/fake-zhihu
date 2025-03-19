@@ -14,6 +14,8 @@ import (
 )
 
 type (
+	FindByIdRequest      = user.FindByIdRequest
+	FindByIdResponse     = user.FindByIdResponse
 	FindByMobileRequest  = user.FindByMobileRequest
 	FindByMobileResponse = user.FindByMobileResponse
 	RegisterRequest      = user.RegisterRequest
@@ -22,6 +24,7 @@ type (
 	User interface {
 		FindByMobile(ctx context.Context, in *FindByMobileRequest, opts ...grpc.CallOption) (*FindByMobileResponse, error)
 		Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+		FindById(ctx context.Context, in *FindByIdRequest, opts ...grpc.CallOption) (*FindByIdResponse, error)
 	}
 
 	defaultUser struct {
@@ -43,4 +46,9 @@ func (m *defaultUser) FindByMobile(ctx context.Context, in *FindByMobileRequest,
 func (m *defaultUser) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	client := user.NewUserClient(m.cli.Conn())
 	return client.Register(ctx, in, opts...)
+}
+
+func (m *defaultUser) FindById(ctx context.Context, in *FindByIdRequest, opts ...grpc.CallOption) (*FindByIdResponse, error) {
+	client := user.NewUserClient(m.cli.Conn())
+	return client.FindById(ctx, in, opts...)
 }

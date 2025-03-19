@@ -6,6 +6,7 @@ option go_package="./user";
 service User {
   rpc FindByMobile(FindByMobileRequest) returns (FindByMobileResponse);
   rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc FindById(FindByIdRequest) returns (FindByIdResponse);
 }
 
 message FindByMobileRequest {
@@ -29,5 +30,17 @@ message RegisterRequest {
 message RegisterResponse {
   int64 userId = 1;
 }
+
+message FindByIdRequest {
+  int64 userId = 1;
+}
+
+message FindByIdResponse {
+  int64 userId = 1;
+  string username = 2;
+  string mobile = 3;
+  string avatar = 4;
+}
+
 
 // goctl rpc protoc user.proto --go_out=. --go-grpc_out=. --zrpc_out=.

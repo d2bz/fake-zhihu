@@ -16,10 +16,28 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/login",
+				Handler: LoginHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/register",
 				Handler: RegisterHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/zhihu"),
+	)
+
+	server.AddRoutes(
+		[]rest.Route{
+			{
+				Method:  http.MethodGet,
+				Path:    "/info",
+				Handler: UserInfoHandler(serverCtx),
+			},
+		},
+		rest.WithJwt(serverCtx.Config.Auth.AccessSecret),
+		rest.WithSignature(serverCtx.Config.Signature),
+		rest.WithPrefix("/zhihu/user"),
 	)
 }

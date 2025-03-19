@@ -31,7 +31,7 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 func (l *RegisterLogic) Register(req *types.RegisterRequest) (resp *types.RegisterResponse, err error) {
 	req.Mobile = strings.TrimSpace(req.Mobile)
 	if len(req.Mobile) == 0 {
-		return nil, code.MobileEmpty
+		return nil, code.RegisterMobileEmpty
 	}
 	req.Name = strings.TrimSpace(req.Name)
 	req.Password = strings.TrimSpace(req.Password)

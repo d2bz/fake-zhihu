@@ -32,3 +32,8 @@ func (s *UserServer) Register(ctx context.Context, in *user.RegisterRequest) (*u
 	l := logic.NewRegisterLogic(ctx, s.svcCtx)
 	return l.Register(in)
 }
+
+func (s *UserServer) FindById(ctx context.Context, in *user.FindByIdRequest) (*user.FindByIdResponse, error) {
+	l := logic.NewFindByIdLogic(ctx, s.svcCtx)
+	return l.FindById(in)
+}
