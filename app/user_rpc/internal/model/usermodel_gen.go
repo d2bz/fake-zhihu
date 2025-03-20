@@ -27,6 +27,7 @@ type (
 	userModel interface {
 		Insert(ctx context.Context, data *User) (sql.Result, error)
 		FindOne(ctx context.Context, id uint64) (*User, error)
+		FindOneByMobile(ctx context.Context, mobile string) (*User, error)
 		Update(ctx context.Context, data *User) error
 		Delete(ctx context.Context, id uint64) error
 	}
@@ -37,12 +38,12 @@ type (
 	}
 
 	User struct {
-		Id       uint64    `db:"id"`       // 主键ID
-		Mtime    time.Time `db:"mtime"`    // 修改时间
-		Ctime    time.Time `db:"ctime"`    // 创建时间
-		Username string    `db:"username"` // 用户名
-		Avatar   string    `db:"avatar"`   // 头像
-		Mobile   string    `db:"mobile"`   // 手机号
+		Id         uint64    `db:"id"`          // 主键ID
+		Username   string    `db:"username"`    // 用户名
+		Avatar     string    `db:"avatar"`      // 头像
+		Mobile     string    `db:"mobile"`      // 手机号
+		CreateTime time.Time `db:"create_time"` // 创建时间
+		UpdateTime time.Time `db:"update_time"` // 最后修改时间
 	}
 )
 
@@ -73,15 +74,29 @@ func (m *defaultUserModel) FindOne(ctx context.Context, id uint64) (*User, error
 	}
 }
 
+func (m *defaultUserModel) FindOneByMobile(ctx context.Context, mobile string) (*User, error) {
+	var resp User
+	query := fmt.Sprintf("select %s from %s where `mobile` = ? limit 1", userRows, m.table)
+	err := m.conn.QueryRowCtx(ctx, &resp, query, mobile)
+	switch err {
+	case nil:
+		return &resp, nil
+	case sqlx.ErrNotFound:
+		return nil, ErrNotFound
+	default:
+		return nil, err
+	}
+}
+
 func (m *defaultUserModel) Insert(ctx context.Context, data *User) (sql.Result, error) {
-	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?, ?, ?)", m.table, userRowsExpectAutoSet)
-	ret, err := m.conn.ExecCtx(ctx, query, data.Mtime, data.Ctime, data.Username, data.Avatar, data.Mobile)
+	query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, userRowsExpectAutoSet)
+	ret, err := m.conn.ExecCtx(ctx, query, data.Username, data.Avatar, data.Mobile)
 	return ret, err
 }
 
-func (m *defaultUserModel) Update(ctx context.Context, data *User) error {
+func (m *defaultUserModel) Update(ctx context.Context, newData *User) error {
 	query := fmt.Sprintf("update %s set %s where `id` = ?", m.table, userRowsWithPlaceHolder)
-	_, err := m.conn.ExecCtx(ctx, query, data.Mtime, data.Ctime, data.Username, data.Avatar, data.Mobile, data.Id)
+	_, err := m.conn.ExecCtx(ctx, query, newData.Username, newData.Avatar, newData.Mobile, newData.Id)
 	return err
 }
 

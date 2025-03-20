@@ -35,8 +35,8 @@ func (l *RegisterLogic) Register(in *user.RegisterRequest) (*user.RegisterRespon
 		Username: in.Username,
 		Mobile:   in.Mobile,
 		Avatar:   in.Avatar,
-		Ctime:    time.Now(),
-		Mtime:    time.Now(),
+		CreateTime:    time.Now(),
+		UpdateTime:    time.Now(),
 	})
 	if err != nil {
 		logx.Errorf("register req: %v error: %v", in, err)
