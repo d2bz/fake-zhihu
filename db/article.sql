@@ -1,3 +1,4 @@
+-- goctl model mysql ddl -src /usr/local/wpf/zhihu/db/article.sql -dir /usr/local/wpf/zhihu/app/article/rpc/internal/model
 create database zhihu_article
 use zhihu_article
 

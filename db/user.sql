@@ -1,3 +1,4 @@
+--goctl model mysql ddl -src /usr/local/wpf/zhihu/db/user.sql -dir /usr/local/wpf/zhihu/app/user_rpc/internal/model
 create database beyond_user;
 use beyond_user;
 
@@ -13,4 +14,4 @@ CREATE TABLE `user` (
   UNIQUE KEY `uk_mobile` (`mobile`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='用户表';
 
-insert into user(username, avatar, mobile) values ('张三', 'https://beyond-blog.oss-cn-beijing.aliyuncs.com/avatar/2021/01/01/1609488000.jpg', '13800138000');
+insert into user(username, avatar, mobile) values ('张三', 'a', '13800138000');
