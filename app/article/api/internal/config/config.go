@@ -12,4 +12,12 @@ type Config struct {
 		AccessExpire int64
 	}
 	ArticleRPC zrpc.RpcClientConf
+	Oss        struct {
+		Endpoint         string
+		AccessKeyId      string
+		AccessKeySecret  string
+		BucketName       string
+		ConnectTimeout   int64 `json:",omitempty"`
+		ReadWriteTimeout int64 `json:",omitempty"`
+	}
 }
