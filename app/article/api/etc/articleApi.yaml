@@ -1,0 +1,17 @@
+Name: article-api
+Host: 0.0.0.0
+Port: 8889
+ArticleRPC:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: article.rpc
+  NonBlock: true
+Auth:
+  AccessSecret: xxxxxxxx
+  AccessExpire: 2592000
+Oss:
+  Endpoint: xxx.com
+  AccessKeyId: xxxxxxx
+  AccessKeySecret: xxxxxxxx
+  BucketName: xxx
