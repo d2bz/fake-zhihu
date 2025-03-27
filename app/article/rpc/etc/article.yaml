@@ -6,3 +6,7 @@ Etcd:
   Key: article.rpc
 mysql:
   datasource: root:318032@tcp(120.79.181.242:3306)/user?charset=utf8?parseTime=True&loc=Local
+BizRedis:
+  Host: 120.79.181.242:6379
+  Password: 318032
+  Typee: node
